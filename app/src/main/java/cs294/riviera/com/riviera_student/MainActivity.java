@@ -1,11 +1,18 @@
 package cs294.riviera.com.riviera_student;
 
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.nio.charset.Charset;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Tag mTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,6 +20,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mTag = getIntent().getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+        NdefRecord uriRecord = new NdefRecord(
+                NdefRecord.TNF_ABSOLUTE_URI ,
+                "http://developer.android.com/index.html".getBytes(Charset.forName("US-ASCII")),
+                new byte[0], new byte[0]);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

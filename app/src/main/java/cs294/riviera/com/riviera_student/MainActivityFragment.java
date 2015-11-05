@@ -1,5 +1,6 @@
 package cs294.riviera.com.riviera_student;
 
+import android.nfc.NfcAdapter;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,4 +20,5 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
+
 }
