@@ -1,5 +1,77 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-    android:name="cs294.riviera.com.riviera_student.MainActivityFragment"
-    tools:layout="@layout/fragment_main" android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/background_img"
+        android:src="@drawable/background"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="centerCrop"
+        android:contentDescription="background img" />
+
+    <TextView
+        style="@style/Banner"
+        android:id="@+id/banner"
+        android:text="@string/sign_up"
+        android:background="@drawable/banner_bg"/>
+
+    <EditText
+        style="@style/TextEntry"
+        android:layout_marginTop="150dp"
+        android:inputType="textPersonName"
+        android:hint="@string/student_name"
+        android:id="@+id/student_name"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        style="@style/TextEntry"
+        android:inputType="textEmailAddress"
+        android:hint="@string/student_email"
+        android:id="@+id/student_email"
+        android:layout_below="@+id/student_name" />
+
+    <EditText
+        style="@style/TextEntry"
+        android:id="@+id/student_grad"
+        android:hint="@string/student_grad"
+        android:layout_below="@+id/student_email" />
+
+    <EditText
+        style="@style/TextEntry"
+        android:id="@+id/student_website"
+        android:inputType="textUri"
+        android:hint="@string/student_website"
+        android:layout_below="@+id/student_grad" />
+
+    <EditText
+        style="@style/TextEntry"
+        android:id="@+id/student_linkedin"
+        android:inputType="textUri"
+        android:hint="@string/student_linkedin"
+        android:layout_below="@+id/student_website" />
+
+    <Button
+        style="@style/ButtonTheme"
+        android:text="@string/resume"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:layout_marginLeft="@dimen/side_margin"
+        android:layout_marginRight="@dimen/side_margin"
+        android:id="@+id/resume_button"
+        android:layout_below="@+id/student_linkedin"
+        android:textStyle="normal"
+        android:onClick="handleResumeButton" />
+
+    <Button
+        style="@style/ButtonTheme"
+        android:text="@string/submit"
+        android:id="@+id/submit_button"
+        android:layout_alignParentBottom="true"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:onClick="handleSubmitButton"/>
+</RelativeLayout>
