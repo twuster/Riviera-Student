@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 import java.nio.charset.Charset;
 
 public class MainActivity extends AppCompatActivity {
-
     private Tag mTag;
     private Button resumeButton;
     private Button submitButton;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String websiteText;
     private String linkedinText;
 
+    private ParseWrapper mParseWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         studentGrad = (EditText) findViewById(R.id.student_grad);
         studentWebsite = (EditText) findViewById(R.id.student_website);
         studentLinkedin = (EditText) findViewById(R.id.student_linkedin);
+
+        mParseWrapper = new ParseWrapper(MainActivity.this);
     }
 
     public void handleResumeButton(View view) {
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!cancel) {
             displayOk("Success!");
+            mParseWrapper.saveStudent(emailText, nameText, websiteText, null, Integer.parseInt(gradText));
         } else {
             Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
         }
@@ -118,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 "http://developer.android.com/index.html".getBytes(Charset.forName("US-ASCII")),
                 new byte[0], new byte[0]);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

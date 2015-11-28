@@ -39,7 +39,8 @@
         style="@style/TextEntry"
         android:id="@+id/student_grad"
         android:hint="@string/student_grad"
-        android:layout_below="@+id/student_email" />
+        android:layout_below="@+id/student_email"
+        android:inputType="number" />
 
     <EditText
         style="@style/TextEntry"
