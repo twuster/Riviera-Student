@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private String linkedinText;
 
     private ParseWrapper mParseWrapper;
+    private BluetoothManager mBluetoothManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         studentLinkedin = (EditText) findViewById(R.id.student_linkedin);
 
         mParseWrapper = new ParseWrapper(MainActivity.this);
+        mBluetoothManager = new BluetoothManager(MainActivity.this);
+
+        mBluetoothManager.start();
     }
 
     public void handleResumeButton(View view) {
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         if (!cancel) {
             displayOk("Success!");
             mParseWrapper.saveStudent(emailText, nameText, websiteText, null, Integer.parseInt(gradText));
+            mParseWrapper.testSave();
         } else {
             Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
         }

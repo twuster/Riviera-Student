@@ -12,6 +12,7 @@ import com.parse.ParseRole;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Wrapper around Parse backend operations.
@@ -42,8 +43,7 @@ public class ParseWrapper {
 //        ParseFile file = new ParseFile("resume.jpg", fileData);
 //        studentData.put("resume", file);
         studentData.put("graduationYear", graduationYear);
-        // TODO: Randomly generate student id
-        studentData.put("url", "2");
+        studentData.put("url", UUID.randomUUID());
 
         ParseUser user = new ParseUser();
         user.setUsername(email);
