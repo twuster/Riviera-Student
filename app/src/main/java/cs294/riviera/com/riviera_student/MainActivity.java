@@ -79,10 +79,10 @@ public class MainActivity extends AppCompatActivity {
         Boolean cancel = signUpCheck();
 
         if (!cancel) {
-            displayOk("Success!");
             UUID studentUUID = mParseWrapper.saveStudent(emailText, nameText, websiteText, null, Integer.parseInt(gradText));
             if (studentUUID != null) {
                 mBluetoothManager.writeData(nameText + "#" + studentUUID.toString());
+                displayOk("Success!");
             } else {
                 Toast.makeText(this, "Error creating user", Toast.LENGTH_SHORT).show();
             }
