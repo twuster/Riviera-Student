@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -55,12 +56,17 @@ public class BluetoothManager {
     }
 
     public void connect() {
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice("98:76:B6:00:74:A6");
+        // One with headers
+//        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice("98:76:B6:00:74:A6");
+        // One without headers
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice("98:76:B6:00:64:4D");
+
         Log.d("", "Connecting to ... " + device);
         mBluetoothAdapter.cancelDiscovery();
         try {
-            btSocket = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+            btSocket = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
             btSocket.connect();
+            Toast.makeText(mContext, "Bluetooth connected", Toast.LENGTH_SHORT).show();
             Log.d("", "Connection made.");
         } catch (IOException e) {
             try {
@@ -68,27 +74,29 @@ public class BluetoothManager {
             } catch (IOException e2) {
                 Log.d("", "Unable to end the connection");
             }
+            Toast.makeText(mContext, "Bluetooth did not connect", Toast.LENGTH_SHORT).show();
             Log.d("", "Socket creation failed");
         }
     }
 
-    private void writeData(String data) {
+    public void writeData(String data) {
         Log.d("DEBUG", "Sending: " + data);
         OutputStream outStream = null;
         try {
             outStream = btSocket.getOutputStream();
         } catch (IOException e) {
             Log.d("Debug", "Bug BEFORE Sending stuff", e);
+            Toast.makeText(mContext, "Error sending data. Try reconnecting", Toast.LENGTH_SHORT).show();
         }
 
         String message = data;
-        /* In my example, I put a button that invoke this method and send a string to it */
         byte[] msgBuffer = message.getBytes();
 
         try {
             outStream.write(msgBuffer);
         } catch (IOException e) {
             Log.d("Debug", "Bug while sending stuff", e);
+            Toast.makeText(mContext, "Error sending data. Try reconnecting", Toast.LENGTH_SHORT).show();
         }
     }
 }

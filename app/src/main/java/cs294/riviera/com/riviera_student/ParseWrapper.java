@@ -20,10 +20,6 @@ import java.util.UUID;
 public class ParseWrapper {
 
     public ParseWrapper(Context context) {
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(context);
-
-        Parse.initialize(context, "B0GS111ytFTrli3CciVw2gFuI5LENEkXxZ1jiwBD", "RpJoBrqgJfyGtCvxju9nowsdT2tcCpFY4q3TUR0i");
     }
 
     public void testSave() {
@@ -32,7 +28,7 @@ public class ParseWrapper {
         testObject.saveInBackground();
     }
 
-    public void saveStudent(String email, String name, String website, byte[] fileData, int graduationYear) {
+    public UUID saveStudent(String email, String name, String website, byte[] fileData, int graduationYear) {
         // TODO: Add ACL to role
 //        ParseRole role = new ParseRole("Student");
 
@@ -43,7 +39,8 @@ public class ParseWrapper {
 //        ParseFile file = new ParseFile("resume.jpg", fileData);
 //        studentData.put("resume", file);
         studentData.put("graduationYear", graduationYear);
-        studentData.put("url", UUID.randomUUID());
+        UUID randomUUID = UUID.randomUUID();
+        studentData.put("url", randomUUID.toString());
 
         ParseUser user = new ParseUser();
         user.setUsername(email);
@@ -58,8 +55,10 @@ public class ParseWrapper {
             studentData.save();
             user.signUp();
             user.save();
+            return randomUUID;
         } catch (ParseException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
