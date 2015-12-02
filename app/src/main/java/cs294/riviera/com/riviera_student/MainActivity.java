@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -21,10 +24,17 @@ import android.widget.Toast;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int REQ_CODE_CAMERA_CAPTURE = 1;
+
     private Tag mTag;
     private Button resumeButton;
     private Button submitButton;
@@ -43,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ParseWrapper mParseWrapper;
     private BluetoothManager mBluetoothManager;
+
+    private File mCurrentPhotoFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +77,33 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothManager.start();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE_CAMERA_CAPTURE && resultCode == RESULT_OK) {
+
+        }
+    }
+
     public void handleResumeButton(View view) {
-        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        startActivity(intent);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            mCurrentPhotoFile = null;
+            try {
+                mCurrentPhotoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (mCurrentPhotoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(mCurrentPhotoFile));
+                startActivityForResult(takePictureIntent, REQ_CODE_CAMERA_CAPTURE);
+            }
+        }
     }
 
     public void handleSubmitButton(View view) {
@@ -79,7 +116,19 @@ public class MainActivity extends AppCompatActivity {
         Boolean cancel = signUpCheck();
 
         if (!cancel) {
-            UUID studentUUID = mParseWrapper.saveStudent(emailText, nameText, websiteText, null, Integer.parseInt(gradText));
+            byte[] photoBytes = null;
+            if (mCurrentPhotoFile != null) {
+                photoBytes = new byte[(int) mCurrentPhotoFile.length()];
+                try {
+                    //convert file into array of bytes
+                    FileInputStream fileInputStream = new FileInputStream(mCurrentPhotoFile);
+                    fileInputStream.read(photoBytes);
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            UUID studentUUID = mParseWrapper.saveStudent(emailText, nameText, websiteText, photoBytes, Integer.parseInt(gradText));
             if (studentUUID != null) {
                 mBluetoothManager.writeData(nameText + "#" + studentUUID.toString());
                 displayOk("Success!");
@@ -180,5 +229,22 @@ public class MainActivity extends AppCompatActivity {
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+//        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 }
