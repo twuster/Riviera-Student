@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     private File mCurrentPhotoFile;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_CODE_CAMERA_CAPTURE && resultCode == RESULT_OK) {
-
+        if (requestCode == REQ_CODE_CAMERA_CAPTURE && mCurrentPhotoFile != null) {
+            resumeButton.setText("Retake photo");
         }
     }
 
@@ -183,8 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 "http://developer.android.com/index.html".getBytes(Charset.forName("US-ASCII")),
                 new byte[0], new byte[0]);
     }
-
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -219,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
                         studentGrad.setText("");
                         studentWebsite.setText("");
                         studentLinkedin.setText("");
+                        mCurrentPhotoFile = null;
+                        resumeButton.setText("Take a photo of your resume");
                     }
                 });
         AlertDialog alert = builder.create();

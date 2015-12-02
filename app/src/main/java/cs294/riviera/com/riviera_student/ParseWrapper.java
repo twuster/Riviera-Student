@@ -40,6 +40,8 @@ public class ParseWrapper {
 
         ParseObject studentData = new ParseObject("StudentData");
         studentData.put("website", website);
+        studentData.put("reviewed", false);
+        studentData.put("name", name);
 
         // TODO: Actually use image file
         ParseFile file = new ParseFile("resume.jpg", fileData);
